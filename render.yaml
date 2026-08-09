@@ -21,4 +21,4 @@ services:
 databases:
   - name: reseller-os-db
     databaseName: reseller_os
-    plan: basic
+    plan: plan: basic-256mb
