@@ -102,7 +102,40 @@ pim_webapp/
   static/style.css      Styling
 ```
 
-## Security notes
+## Email Sync (order confirmations → draft purchases)
+
+Under **Email Sync**, connect one IMAP mailbox per account (Gmail, Outlook,
+Yahoo, iCloud, or any other IMAP provider). Click **Sync Inbox Now** to scan
+recent mail for anything that looks like an order confirmation — it lands
+in a **Review Queue**, never straight into Purchases.
+
+- **Vendor auto-matching:** set "Order Email Domain" on a Vendor (e.g.
+  `walmart.com`) and future syncs will pre-fill that vendor on matching
+  emails automatically.
+- **What gets picked up:** any email whose sender domain matches a
+  configured vendor, or whose subject contains a keyword like "order",
+  "receipt", "confirmation", "shipped", or "invoice". Everything else is
+  ignored — promotional emails, newsletters, etc. never make it into the
+  queue.
+- **What's extracted:** order number and the largest dollar amount found in
+  the email (usually the total) — both are just a starting point you edit
+  before approving, not something trusted blindly.
+- **Nothing is automatic:** every draft needs a vendor selected and an
+  "Approve" click before it becomes a real Purchase. Not an order? Dismiss
+  it — dismissed/approved emails are never re-shown on the next sync.
+- **App passwords:** if your email account has 2FA on (it should), your
+  regular password won't work over IMAP — you'll need to generate an
+  "app password" from your provider (Google Account → Security → App
+  Passwords; similarly for Outlook/Yahoo/iCloud) and use that instead.
+- **On-demand only:** syncing happens when you click the button — there's
+  no background polling in this version. If you want it to run
+  automatically on a schedule, that's a natural next step (a Render Cron
+  Job hitting a sync endpoint) — ask if you want that wired up.
+- **Security:** the mailbox password is encrypted at rest (see
+  `app/crypto_utils.py`) using a key derived from `SESSION_SECRET` — never
+  stored in plain text.
+
+
 
 - Passwords are hashed with PBKDF2-SHA256 (260,000 iterations) + a random
   salt per user — never stored in plain text. See `app/auth.py`.
