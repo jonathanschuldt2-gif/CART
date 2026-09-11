@@ -1,0 +1,26 @@
+id,line1,line2,city,zip,severity,techniques
+1,1858 W Berteau Av,APT GDN-A1,Chicago,60613,minor,suffix-abbrev(Ave->Av) + dir kept
+2,1858 West Berteau Ave,APT GDN B2,Chicago,60613,minor,dir expanded(W->West) + suffix kept full
+3,1858 W. Berteau Ave.,APT GDN-C3,Chicago,60613,minor,added periods on dir + suffix
+4,1858-W Berteau Ave,APT GDN 01,Chicago,60613,minor,extra hyphen + suffix kept
+5,1858 W Berteau-Ave,APT GDN-X9,Chicago,60613,minor,extra hyphen before suffix
+6,1858 W BerteauAve,APT GDN Z2,Chicago,60613,minor,missing space + suffix kept
+7,1858 W Ber teau Ave,APT GDN-2A,Chicago,60613,minor,extra space mid-word + suffix kept
+8,1858 W Berteau  Ave,APT GDN 7,Chicago,60613,minor,double space + suffix kept
+9,18 58 W Berteau Ave,APT GDN-GD1,Chicago,60613,minor,extra space in number + suffix kept
+10,1858 w berteau ave,APT GDN 3B,Chicago,60613,minor,lowercase dir + lowercase suffix
+11,1858 W Berteu Ave,APT GDN-M4,Chicago,60613,minor,transposed letters(eau->eu) + suffix kept
+12,1858 W Bertaeu Ave,APT GDN K1,Chicago,60613,minor,transposed letters(ea->ae) + suffix kept
+13,1858 W Berrteau Ave,APT GDN-9,Chicago,60613,minor,doubled letter(r) + suffix kept
+14,1858 W Berteauu Ave,APT GDN Q7,Chicago,60613,minor,doubled letter(u) + suffix kept
+15,1858 W Berteau Avee,APT GDN-2,Chicago,60613,minor,doubled letter in suffix + dir kept
+16,1O58 W Berteau Ave,APT GDN T5,Chicago,60613,minor,digit substitution(0->O) + suffix kept
+17,1858 W Berteau AVE,APT GDN-1B,Chicago,60613,minor,uppercase suffix + dir kept
+18,1858 WBerteau Ave,APT GDN G9,Chicago,60613,minor,missing space after dir + suffix kept
+19,18S8 W Berteau Ave,APT GDN-V3,Chicago,60613,challenging,digit substitution(5->S) + suffix kept
+20,1858-W-Berteau-Ave,APT GDN 4,Chicago,60613,challenging,multiple extra hyphens throughout
+21,1858 W  Berteau   Ave,APT GDN-D2,Chicago,60613,challenging,multiple extra spaces throughout
+22,1858 W Bteteau Ave,APT GDN 8A,Chicago,60613,challenging,transposed letters(er->te) + suffix kept
+23,1885 W Berteau Ave,APT GDN-S1,Chicago,60613,challenging,transposed digits(58->85) + suffix kept
+24,1858 N Berteau Ave,APT GDN E4,Chicago,60613,challenging,wrong directional(W->N) + suffix kept
+25,1858 W Berteau Cv,APT GDN-55,Chicago,60613,challenging,wrong suffix family(Ave->Cv) + dir kept
