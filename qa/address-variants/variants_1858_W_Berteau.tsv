@@ -1,0 +1,26 @@
+#	Line 1	Line 2	City	Zip	Severity	Line 1 techniques
+1	1858 W Berteau Ave.	APT GDN-7	Chicago	60613	Minor	Suffix AVE; trailing period
+2	1858 West Berteau AV	APT G1	Chicago	60613	Minor	Directional spelled out; suffix AV
+3	1858 W. Berteau Aven	UNIT GDN-3	Chicago	60613	Minor	Directional period; suffix AVEN
+4	1858 W Bertaeu Ave	STE 1A	Chicago	60613	Minor	Transposed letters; suffix AVE
+5	1858-W Berteau Avenu	RM 2B	Chicago	60613	Minor	Extra hyphen; suffix AVENU
+6	1858 W Berteau  Avn	# GDN4	Chicago	60613	Minor	Double space; suffix AVN
+7	1858 w berteau ave	FL 1 APT C9	Chicago	60613	Minor	All lowercase; suffix ave
+8	1858 W Beerteau Avenue	BSMT-2	Chicago	60613	Minor	Doubled letter; full suffix
+9	1858 W BerteauAve	APT GDN-1B	Chicago	60613	Minor	Missing space; suffix AVE
+10	1858 W Berteau-Ave	OFC 1C	Chicago	60613	Minor	Extra hyphen; suffix AVE
+11	18 58 W Berteau Ave	LOWR-4	Chicago	60613	Minor	Extra space in number; suffix AVE
+12	1858 WEST BERTEAU AVNUE	UNIT G-2	Chicago	60613	Minor	All caps; directional spelled out; suffix AVNUE
+13	1858 W. Berteu Ave	SPC 11	Chicago	60613	Minor	Dropped letter; directional period; suffix AVE
+14	1858 W Berteau Av.	FRNT A1	Chicago	60613	Minor	Suffix AV; trailing period
+15	1858 W Bereteau Avenue	TRLR 5G	Chicago	60613	Minor	Inserted letter; full suffix
+16	1858 Wst Berteau AVE	REAR 3	Chicago	60613	Minor	Nonstandard directional; suffix caps
+17	1858 W Berteau Aveune	APT GDN#9	Chicago	60613	Minor	Transposed letters in suffix
+18	1858W Berteau Ave	STE G-10	Chicago	60613	Minor	Missing space number/directional; suffix AVE
+19	185B W Bertaeu Aven	APT-GDN-X7	Chicago	60613	Challenging	Number sub (B for 8); transposed letters; suffix AVEN
+20	1-858 W Ber teau Av	PH 2Z	Chicago	60613	Challenging	Hyphen in number; space in street name; suffix AV
+21	18S8 WBerteauAvenue	BLDG 1 APT G4	Chicago	60613	Challenging	Number sub (S for 8); missing spaces x2
+22	I858 W Berteu Aven	UPPR-1Q	Chicago	60613	Challenging	Number sub (I for 1); dropped letter; suffix AVEN
+23	1858-W-Berrteau-Ave	UNIT GDN-A3	Chicago	60613	Challenging	Hyphens throughout; doubled letter; suffix AVE
+24	1858 W Btreaeu Avnue	APT GD N5	Chicago	60613	Challenging	Multiple transpositions; suffix AVNUE
+25	1 858 W Bertea u AVENUE	FL 1 # 6B	Chicago	60613	Challenging	Spaces in number and street name; caps suffix
