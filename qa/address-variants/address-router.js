@@ -263,5 +263,5 @@
     compareLine2: compareLine2, prepareOriginal: prepareOriginal, route: route
   };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
-  else root.AddressRouter = api;
+  if (root) root.AddressRouter = api;
 })(typeof window !== "undefined" ? window : this);

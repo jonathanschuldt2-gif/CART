@@ -34,3 +34,10 @@ assert.strictEqual(R.standardizeLine2("Apartment gdn-12").text, "APT GDN 12");
 assert.strictEqual(R.compareLine2("APT GDN-7", "Apt GDN").status, "Original unit + junk");
 
 console.log("address-router: all tests passed");
+
+// index.html inlines the engine so it works as a single file; it must match.
+const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
+const inlined = html.split("<!-- BEGIN address-router.js")[1].split("<script>\n")[1].split("</script>\n<!-- END address-router.js")[0];
+assert.strictEqual(inlined, fs.readFileSync(path.join(__dirname, "address-router.js"), "utf8"),
+  "index.html inlined engine is out of sync with address-router.js");
+console.log("index.html inline engine in sync");
