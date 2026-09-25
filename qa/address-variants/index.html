@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Address Route Checker</title>
+<style>
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --ink: #1b1f24; --muted: #5d6671; --line: #dde1e6;
+  --accent: #2458d6; --accent-ink: #ffffff; --ok: #1a7f45; --ok-bg: #e3f4ea;
+  --warn: #9a6200; --warn-bg: #fdf1dc; --bad: #b3261e; --bad-bg: #fbe4e2;
+  --info: #3b4b63; --info-bg: #e8edf5; --code: #eef1f5;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111418; --panel: #1a1f25; --ink: #e6e9ed; --muted: #9aa4af; --line: #2c333b;
+    --accent: #6d9bff; --accent-ink: #0b1220; --ok: #6fd49a; --ok-bg: #16301f;
+    --warn: #f0bf62; --warn-bg: #33270f; --bad: #ff8a80; --bad-bg: #3a1916;
+    --info: #b6c4d8; --info-bg: #222b37; --code: #242b33;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111418; --panel: #1a1f25; --ink: #e6e9ed; --muted: #9aa4af; --line: #2c333b;
+  --accent: #6d9bff; --accent-ink: #0b1220; --ok: #6fd49a; --ok-bg: #16301f;
+  --warn: #f0bf62; --warn-bg: #33270f; --bad: #ff8a80; --bad-bg: #3a1916;
+  --info: #b6c4d8; --info-bg: #222b37; --code: #242b33;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+header { padding: 20px 16px 8px; max-width: 1400px; margin: 0 auto; }
+header h1 { margin: 0 0 4px; font-size: 22px; }
+header p { margin: 0; color: var(--muted); max-width: 70ch; }
+main { max-width: 1400px; margin: 0 auto; padding: 8px 16px 48px; display: grid; gap: 16px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+.panel h2 { margin: 0 0 4px; font-size: 16px; }
+.panel .hint { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+.grid2 { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+@media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+input, select, textarea { font: inherit; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; width: 100%; }
+textarea { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; min-height: 170px; resize: vertical; }
+button, .btn { font: inherit; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  border-radius: 6px; padding: 6px 12px; cursor: pointer; text-decoration: none; display: inline-block; white-space: nowrap; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:disabled { opacity: .55; cursor: default; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; }
+.row > * { flex: 0 0 auto; }
+.grow { flex: 1 1 200px !important; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--panel); }
+.scroll { overflow-x: auto; }
+.orig-table input { min-width: 70px; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+.sub { color: var(--muted); font-size: 12px; }
+.pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.ok { color: var(--ok); background: var(--ok-bg); }
+.warn { color: var(--warn); background: var(--warn-bg); }
+.bad { color: var(--bad); background: var(--bad-bg); }
+.info { color: var(--info); background: var(--info-bg); }
+.bar { height: 6px; background: var(--code); border-radius: 3px; overflow: hidden; width: 80px; margin-top: 4px; }
+.bar > i { display: block; height: 100%; background: var(--accent); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.stat { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.stat b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-size: 12px; }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+.filters button[aria-pressed="true"] { background: var(--info-bg); border-color: var(--info); }
+.links { display: flex; gap: 6px; flex-wrap: wrap; }
+.links a { color: var(--accent); font-size: 12px; }
+.verdict { display: flex; gap: 4px; }
+.verdict button { padding: 2px 8px; font-size: 12px; }
+.verdict button[aria-pressed="true"][data-v="pass"] { background: var(--ok-bg); color: var(--ok); border-color: var(--ok); }
+.verdict button[aria-pressed="true"][data-v="fail"] { background: var(--bad-bg); color: var(--bad); border-color: var(--bad); }
+.note { font-size: 12px; color: var(--muted); }
+.gstatus { font-size: 12px; margin-top: 8px; min-height: 1.2em; }
+.empty { color: var(--muted); padding: 24px; text-align: center; }
+details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+@media (max-width: 700px) {
+  #results thead { display: none; }
+  #results tr { display: block; border-bottom: 1px solid var(--line); padding: 8px 0; }
+  #results td { display: block; border: 0; padding: 3px 0; }
+  #results td[data-l]::before { content: attr(data-l); display: block; font-size: 11px; color: var(--muted); }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Address Route Checker</h1>
+  <p>Paste shipping address variants, route each one back to its original address using USPS Publication 28 rules,
+    then confirm the result against Google — either automatically with a Google Maps API key or manually on google.com.</p>
+</header>
+
+<main>
+  <div class="grid2">
+    <section class="panel">
+      <h2>1. Original addresses</h2>
+      <p class="hint">The clean addresses variants should route back to. Add more rows to test routing between similar addresses.</p>
+      <div class="scroll">
+        <table class="orig-table" id="origTable">
+          <thead><tr><th>Line 1</th><th>Line 2</th><th>City</th><th>State</th><th>Zip</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="row" style="margin-top:8px"><button id="addOrig">+ Add original</button></div>
+    </section>
+
+    <section class="panel">
+      <h2>2. Variants</h2>
+      <p class="hint">Paste rows from Excel (tab-separated) or CSV: <span class="mono">Line 1, Line 2, City, Zip</span>.
+        A leading row number and a header row are detected automatically.</p>
+      <textarea id="variantsInput" spellcheck="false"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="primary" id="runBtn">Route variants</button>
+        <button id="sampleBtn">Load 1858 W Berteau sample</button>
+        <label class="btn" style="margin:0;color:var(--ink);font-size:14px">Open file…
+          <input type="file" id="fileInput" accept=".tsv,.csv,.txt" hidden></label>
+        <button id="clearBtn">Clear</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <h2>3. Google verification</h2>
+    <p class="hint">Without a key, every result row has <b>Google Maps</b> and <b>Google Search</b> links to check it on google.com
+      and Pass / Fail buttons to record your verdict. With a Google Maps Platform key, the tool checks each variant automatically:
+      a variant passes when Google resolves it to the same place as the original.</p>
+    <div class="row">
+      <div class="grow"><label for="apiKey">Google Maps Platform API key (optional)</label>
+        <input id="apiKey" type="password" autocomplete="off" placeholder="AIza…"></div>
+      <div><label for="gMode">Check with</label>
+        <select id="gMode">
+          <option value="geocoder">Geocoding (Maps JavaScript API)</option>
+          <option value="validation">Address Validation API</option>
+        </select></div>
+      <div><label>&nbsp;</label><label style="display:flex;gap:6px;align-items:center;color:var(--ink);font-size:13px;margin:6px 0">
+        <input type="checkbox" id="rememberKey" style="width:auto"> Remember key in this browser</label></div>
+      <div><label>&nbsp;</label><button class="primary" id="googleBtn" disabled>Run Google check</button></div>
+    </div>
+    <div class="gstatus" id="gStatus"></div>
+    <details style="margin-top:8px"><summary>Key setup</summary>
+      <p class="note">In Google Cloud Console enable the <b>Maps JavaScript API</b> (for Geocoding mode, which also needs the
+        <b>Geocoding API</b>) and/or the <b>Address Validation API</b>. Restrict the key to HTTP referrers where you host this page.
+        The key is only sent to Google; it is stored locally only if you tick "Remember key".</p>
+    </details>
+  </section>
+
+  <section class="panel">
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <h2 style="margin:0">4. Results</h2>
+      <div class="row"><button id="exportBtn" disabled>Export CSV</button></div>
+    </div>
+    <div class="stats" id="stats" style="margin-top:12px"></div>
+    <div class="filters" id="filters"></div>
+    <div class="scroll">
+      <table id="results">
+        <thead><tr>
+          <th>#</th><th>Variant</th><th>Routed to original</th><th>Confidence</th>
+          <th>Line 2</th><th>Google (auto)</th><th>Check on google.com</th><th>Manual verdict</th>
+        </tr></thead>
+        <tbody><tr><td colspan="8" class="empty">Load variants and click <b>Route variants</b>.</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script src="address-router.js"></script>
+<script>
+(function () {
+  "use strict";
+  var R = window.AddressRouter;
+  var $ = function (s) { return document.querySelector(s); };
+
+  var SAMPLE = [
+    "1858 W Berteau Ave.\tAPT GDN-7\tChicago\t60613", "1858 West Berteau AV\tAPT G1\tChicago\t60613",
+    "1858 W. Berteau Aven\tUNIT GDN-3\tChicago\t60613", "1858 W Bertaeu Ave\tSTE 1A\tChicago\t60613",
+    "1858-W Berteau Avenu\tRM 2B\tChicago\t60613", "1858 W Berteau  Avn\t# GDN4\tChicago\t60613",
+    "1858 w berteau ave\tFL 1 APT C9\tChicago\t60613", "1858 W Beerteau Avenue\tBSMT-2\tChicago\t60613",
+    "1858 W BerteauAve\tAPT GDN-1B\tChicago\t60613", "1858 W Berteau-Ave\tOFC 1C\tChicago\t60613",
+    "18 58 W Berteau Ave\tLOWR-4\tChicago\t60613", "1858 WEST BERTEAU AVNUE\tUNIT G-2\tChicago\t60613",
+    "1858 W. Berteu Ave\tSPC 11\tChicago\t60613", "1858 W Berteau Av.\tFRNT A1\tChicago\t60613",
+    "1858 W Bereteau Avenue\tTRLR 5G\tChicago\t60613", "1858 Wst Berteau AVE\tREAR 3\tChicago\t60613",
+    "1858 W Berteau Aveune\tAPT GDN#9\tChicago\t60613", "1858W Berteau Ave\tSTE G-10\tChicago\t60613",
+    "185B W Bertaeu Aven\tAPT-GDN-X7\tChicago\t60613", "1-858 W Ber teau Av\tPH 2Z\tChicago\t60613",
+    "18S8 WBerteauAvenue\tBLDG 1 APT G4\tChicago\t60613", "I858 W Berteu Aven\tUPPR-1Q\tChicago\t60613",
+    "1858-W-Berrteau-Ave\tUNIT GDN-A3\tChicago\t60613", "1858 W Btreaeu Avnue\tAPT GD N5\tChicago\t60613",
+    "1 858 W Bertea u AVENUE\tFL 1 # 6B\tChicago\t60613"
+  ].join("\n");
+
+  var state = { originals: [], results: [], filter: "all", google: {}, verdicts: {} };
+
+  function store(key, val) { try { if (val === null) localStorage.removeItem(key); else localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+  function load(key, dflt) { try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : dflt; } catch (e) { return dflt; } }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+
+  // ---------- Originals ----------
+  function renderOriginals() {
+    var tb = $("#origTable tbody");
+    tb.innerHTML = "";
+    state.originals.forEach(function (o, i) {
+      var tr = document.createElement("tr");
+      ["line1", "line2", "city", "state", "zip"].forEach(function (f) {
+        var td = document.createElement("td"), inp = document.createElement("input");
+        inp.value = o[f] || ""; inp.setAttribute("aria-label", f);
+        if (f === "state") inp.style.width = "56px";
+        if (f === "zip") inp.style.width = "80px";
+        inp.addEventListener("input", function () { o[f] = inp.value; saveOriginals(); });
+        td.appendChild(inp); tr.appendChild(td);
+      });
+      var td = document.createElement("td"), b = document.createElement("button");
+      b.textContent = "✕"; b.title = "Remove"; b.disabled = state.originals.length === 1;
+      b.addEventListener("click", function () { state.originals.splice(i, 1); saveOriginals(); renderOriginals(); });
+      td.appendChild(b); tr.appendChild(td); tb.appendChild(tr);
+    });
+  }
+  function saveOriginals() { store("arc.originals", state.originals); }
+
+  // ---------- Parsing input ----------
+  function parseVariants(text) {
+    var lines = text.split(/\r?\n/).map(function (l) { return l.replace(/\s+$/, ""); }).filter(function (l) { return l.trim(); });
+    var rows = lines.map(function (l) {
+      if (l.indexOf("\t") >= 0) return l.split("\t");
+      return splitCsv(l);
+    });
+    if (rows.length && /line\s*1/i.test(rows[0].join(" "))) rows.shift();
+    return rows.map(function (cells) {
+      cells = cells.map(function (c) { return c.trim() === "" ? "" : c; });
+      if (/^\d{1,4}$/.test((cells[0] || "").trim()) && cells.length >= 4) cells = cells.slice(1);
+      return { line1: cells[0] || "", line2: cells[1] || "", city: (cells[2] || "").trim(), zip: (cells[3] || "").trim() };
+    }).filter(function (v) { return v.line1.trim(); });
+  }
+  function splitCsv(line) {
+    var out = [], cur = "", q = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
+      if (q) { if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; } else if (c === '"') q = false; else cur += c; }
+      else if (c === '"') q = true; else if (c === ",") { out.push(cur); cur = ""; } else cur += c;
+    }
+    out.push(cur); return out;
+  }
+
+  // ---------- Routing ----------
+  function runRouting() {
+    var variants = parseVariants($("#variantsInput").value);
+    var originals = state.originals.filter(function (o) { return (o.line1 || "").trim(); }).map(R.prepareOriginal);
+    if (!originals.length) { alert("Add at least one original address."); return; }
+    state.results = variants.map(function (v, i) {
+      var r = R.route(v, originals);
+      r.variant = v; r.n = i + 1; r.key = keyOf(v);
+      return r;
+    });
+    state.google = {};
+    state.preparedOriginals = originals;
+    store("arc.variants", $("#variantsInput").value);
+    $("#googleBtn").disabled = !state.results.length;
+    $("#exportBtn").disabled = !state.results.length;
+    render();
+  }
+  function keyOf(v) { return [v.line1, v.line2, v.city, v.zip].join("|"); }
+
+  function fullAddress(a) {
+    return [a.line1, a.line2, a.city, [a.state || "", a.zip || ""].join(" ").trim()].filter(function (x) { return x && String(x).trim(); }).join(", ");
+  }
+  function statusClass(s) {
+    return { Exact: "ok", Normalized: "ok", "Fuzzy match": "info", "Needs review": "warn", Unmatched: "bad" }[s] || "info";
+  }
+
+  // ---------- Rendering ----------
+  function render() {
+    var res = state.results;
+    var count = function (fn) { return res.filter(fn).length; };
+    var gDone = count(function (r) { return state.google[r.key] && state.google[r.key].done; });
+    var gPass = count(function (r) { return state.google[r.key] && state.google[r.key].pass === true; });
+    var mPass = count(function (r) { return state.verdicts[r.key] === "pass"; });
+    var mFail = count(function (r) { return state.verdicts[r.key] === "fail"; });
+    var stats = [
+      [res.length, "Variants"],
+      [count(function (r) { return r.routed && r.status !== "Needs review"; }), "Routed to original"],
+      [count(function (r) { return r.status === "Needs review"; }), "Needs review"],
+      [count(function (r) { return r.status === "Unmatched"; }), "Unmatched"],
+      [gDone ? gPass + " / " + gDone : "—", "Google auto-check pass"],
+      [mPass + mFail ? mPass + " / " + (mPass + mFail) : "—", "Manual google.com pass"]
+    ];
+    $("#stats").innerHTML = res.length ? stats.map(function (s) { return '<div class="stat"><b>' + esc(s[0]) + "</b><span>" + esc(s[1]) + "</span></div>"; }).join("") : "";
+
+    var filters = [["all", "All"], ["routed", "Routed"], ["Needs review", "Needs review"], ["Unmatched", "Unmatched"], ["gfail", "Google mismatch"], ["unverified", "Not verified"]];
+    $("#filters").innerHTML = res.length ? filters.map(function (f) {
+      return '<button data-f="' + f[0] + '" aria-pressed="' + (state.filter === f[0]) + '">' + f[1] + "</button>";
+    }).join("") : "";
+
+    var shown = res.filter(function (r) {
+      var g = state.google[r.key];
+      switch (state.filter) {
+        case "routed": return r.routed && r.status !== "Needs review";
+        case "Needs review": case "Unmatched": return r.status === state.filter;
+        case "gfail": return g && g.done && g.pass === false;
+        case "unverified": return !state.verdicts[r.key] && !(g && g.done);
+        default: return true;
+      }
+    });
+    var tb = $("#results tbody");
+    if (!res.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">Load variants and click <b>Route variants</b>.</td></tr>'; return; }
+    if (!shown.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">No rows match this filter.</td></tr>'; return; }
+    tb.innerHTML = shown.map(rowHtml).join("");
+  }
+
+  function rowHtml(r) {
+    var v = r.variant, o = r.original, g = state.google[r.key], verdict = state.verdicts[r.key] || "";
+    var variantFull = fullAddress({ line1: v.line1, line2: v.line2, city: v.city, state: o && o.state, zip: v.zip });
+    var gmaps = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(variantFull);
+    var gsearch = "https://www.google.com/search?q=" + encodeURIComponent(variantFull);
+    var gorig = o ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(fullAddress(o)) : "";
+    var l2cls = { "Same unit": "ok", "Original unit + junk": "info", "Different unit": "warn", Missing: "bad" }[r.line2.status] || "info";
+
+    var gHtml = '<span class="sub">Not run</span>';
+    if (g && g.pending) gHtml = '<span class="sub">Checking…</span>';
+    else if (g && g.error) gHtml = '<span class="pill bad">Error</span><div class="sub">' + esc(g.error) + "</div>";
+    else if (g && g.done) {
+      gHtml = '<span class="pill ' + (g.pass ? "ok" : "bad") + '">' + (g.pass ? "Same place as original" : "Different place") + "</span>" +
+        '<div class="sub">' + esc(g.formatted || "No result") + "</div>" +
+        (g.detail ? '<div class="sub">' + esc(g.detail) + "</div>" : "");
+    }
+
+    return "<tr>" +
+      '<td data-l="#">' + r.n + "</td>" +
+      '<td data-l="Variant"><div class="mono">' + esc(v.line1) + "</div><div class=\"mono sub\">" + esc(v.line2) + "</div>" +
+        '<div class="sub">' + esc([v.city, v.zip].filter(Boolean).join(" ")) + "</div></td>" +
+      '<td data-l="Routed to original"><span class="pill ' + statusClass(r.status) + '">' + esc(r.status) + "</span>" +
+        (r.routed ? '<div class="mono" style="margin-top:4px">' + esc(r.correctedLine1) + "</div>" +
+          '<div class="sub">' + esc(fullAddress(o)) + "</div>" : "") +
+        (r.notes.length ? '<div class="note">' + esc(r.notes.join("; ")) + "</div>" : "") + "</td>" +
+      '<td data-l="Confidence"><b>' + r.confidence + '%</b><div class="bar"><i style="width:' + r.confidence + '%"></i></div></td>' +
+      '<td data-l="Line 2"><div class="mono">' + esc(r.line2.normalized || "—") + '</div><span class="pill ' + l2cls + '">' + esc(r.line2.status) + "</span>" +
+        (r.line2.recognized ? "" : '<div class="note">No USPS designator</div>') + "</td>" +
+      '<td data-l="Google (auto)">' + gHtml + "</td>" +
+      '<td data-l="Check on google.com"><div class="links"><a href="' + gmaps + '" target="_blank" rel="noopener">Google Maps</a>' +
+        '<a href="' + gsearch + '" target="_blank" rel="noopener">Google Search</a>' +
+        (gorig ? '<a href="' + gorig + '" target="_blank" rel="noopener">Original on Maps</a>' : "") + "</div></td>" +
+      '<td data-l="Manual verdict"><div class="verdict" data-key="' + esc(r.key) + '">' +
+        '<button data-v="pass" aria-pressed="' + (verdict === "pass") + '">Pass</button>' +
+        '<button data-v="fail" aria-pressed="' + (verdict === "fail") + '">Fail</button></div></td>' +
+      "</tr>";
+  }
+
+  // ---------- Google automatic check ----------
+  var mapsLoading = null;
+  function loadMaps(key) {
+    if (window.google && window.google.maps && window.google.maps.Geocoder) return Promise.resolve();
+    if (mapsLoading) return mapsLoading;
+    mapsLoading = new Promise(function (resolve, reject) {
+      window.__arcMapsReady = resolve;
+      window.gm_authFailure = function () { reject(new Error("Google rejected the API key (check it is valid and allowed for this page).")); };
+      var s = document.createElement("script");
+      s.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(key) + "&v=weekly&callback=__arcMapsReady";
+      s.async = true;
+      s.onerror = function () { reject(new Error("Could not load Google Maps JavaScript API.")); };
+      document.head.appendChild(s);
+    });
+    mapsLoading.catch(function () { mapsLoading = null; });
+    return mapsLoading;
+  }
+
+  function geocode(address) {
+    return new Promise(function (resolve, reject) {
+      new google.maps.Geocoder().geocode({ address: address, componentRestrictions: { country: "US" } }, function (results, status) {
+        if (status === "OK" && results.length) {
+          var r = results[0];
+          resolve({ placeId: r.place_id, lat: r.geometry.location.lat(), lng: r.geometry.location.lng(),
+            formatted: r.formatted_address, partial: !!r.partial_match, type: (r.types || [])[0] });
+        } else if (status === "ZERO_RESULTS") resolve(null);
+        else reject(new Error("Geocoder: " + status));
+      });
+    });
+  }
+
+  function validate(key, a) {
+    var body = { address: { regionCode: "US", addressLines: [a.line1, a.line2].filter(Boolean),
+      locality: a.city || undefined, administrativeArea: a.state || undefined, postalCode: a.zip || undefined } };
+    return fetch("https://addressvalidation.googleapis.com/v1:validateAddress?key=" + encodeURIComponent(key), {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body)
+    }).then(function (res) {
+      return res.json().then(function (j) {
+        if (!res.ok) throw new Error((j.error && j.error.message) || ("HTTP " + res.status));
+        var r = j.result || {}, geo = r.geocode || {}, loc = geo.location || {}, verdict = r.verdict || {};
+        return { placeId: geo.placeId, lat: loc.latitude, lng: loc.longitude,
+          formatted: r.address && r.address.formattedAddress, partial: !verdict.addressComplete,
+          granularity: verdict.validationGranularity, inferred: !!verdict.hasInferredComponents,
+          replaced: !!verdict.hasReplacedComponents };
+      });
+    }, function () { throw new Error("Network/CORS error calling Address Validation API."); });
+  }
+
+  function metersBetween(a, b) {
+    var toRad = Math.PI / 180, R0 = 6371000;
+    var dLat = (b.lat - a.lat) * toRad, dLng = (b.lng - a.lng) * toRad;
+    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a.lat * toRad) * Math.cos(b.lat * toRad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 2 * R0 * Math.asin(Math.sqrt(h));
+  }
+
+  // Google checks Line 1 + city/state/zip; unit junk in Line 2 is judged separately.
+  function lookup(mode, key, a) {
+    if (mode === "validation") return validate(key, a);
+    return geocode(fullAddress({ line1: a.line1, city: a.city, state: a.state, zip: a.zip }));
+  }
+
+  function runGoogle() {
+    var key = $("#apiKey").value.trim(), mode = $("#gMode").value;
+    if (!key) { $("#gStatus").textContent = "Enter an API key for the automatic check, or use the google.com links in each row."; return; }
+    store("arc.key", $("#rememberKey").checked ? key : null);
+    store("arc.mode", mode);
+    var btn = $("#googleBtn"); btn.disabled = true;
+    var status = $("#gStatus");
+    status.textContent = "Contacting Google…";
+    var ready = mode === "geocoder" ? loadMaps(key) : Promise.resolve();
+    var origCache = {};
+    ready.then(function () {
+      var i = 0, total = state.results.length;
+      function next() {
+        if (i >= total) { status.textContent = "Google check finished for " + total + " variants."; btn.disabled = false; render(); return; }
+        var r = state.results[i++];
+        status.textContent = "Checking " + i + " of " + total + "…";
+        if (!r.original) { state.google[r.key] = { done: true, pass: false, detail: "No original to compare" }; return next(); }
+        state.google[r.key] = { pending: true }; render();
+        var o = r.original;
+        var oKey = o.id;
+        var origP = origCache[oKey] || (origCache[oKey] = lookup(mode, key, o));
+        var v = { line1: r.variant.line1, line2: r.variant.line2, city: r.variant.city || o.city, state: o.state, zip: r.variant.zip || o.zip };
+        Promise.all([origP, lookup(mode, key, v)]).then(function (pair) {
+          var go = pair[0], gv = pair[1];
+          if (!go) throw new Error("Google could not find the original address");
+          if (!gv) { state.google[r.key] = { done: true, pass: false, detail: "Google found no result" }; return; }
+          var dist = (gv.lat != null && go.lat != null) ? metersBetween(go, gv) : null;
+          var same = (gv.placeId && gv.placeId === go.placeId) || (dist != null && dist <= 25);
+          var detail = [];
+          if (gv.placeId && gv.placeId === go.placeId) detail.push("same place ID");
+          else if (dist != null) detail.push(Math.round(dist) + " m from original");
+          if (gv.partial) detail.push(mode === "validation" ? "incomplete" : "partial match");
+          if (gv.granularity) detail.push("granularity " + gv.granularity);
+          if (gv.replaced) detail.push("components replaced");
+          state.google[r.key] = { done: true, pass: !!same, formatted: gv.formatted, detail: detail.join(" · ") };
+        }).catch(function (e) {
+          state.google[r.key] = { error: e.message };
+        }).then(function () { render(); setTimeout(next, 120); });
+      }
+      next();
+    }).catch(function (e) { status.textContent = e.message; btn.disabled = false; });
+  }
+
+  // ---------- Export ----------
+  function exportCsv() {
+    var head = ["#", "Variant Line 1", "Variant Line 2", "City", "Zip", "Status", "Confidence", "Corrected Line 1",
+      "Routed original", "Line 2 normalized", "Line 2 status", "Notes", "Google result", "Google formatted", "Google detail", "Manual verdict"];
+    var rows = state.results.map(function (r) {
+      var g = state.google[r.key] || {};
+      return [r.n, r.variant.line1, r.variant.line2, r.variant.city, r.variant.zip, r.status, r.confidence, r.correctedLine1,
+        r.original ? fullAddress(r.original) : "", r.line2.normalized, r.line2.status, r.notes.join("; "),
+        g.error ? "Error: " + g.error : g.done ? (g.pass ? "Pass" : "Fail") : "", g.formatted || "", g.detail || "",
+        state.verdicts[r.key] || ""];
+    });
+    var csv = [head].concat(rows).map(function (row) {
+      return row.map(function (c) { c = String(c == null ? "" : c); return /[",\n]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c; }).join(",");
+    }).join("\r\n");
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    a.download = "address-route-results.csv";
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  // ---------- Wiring ----------
+  $("#addOrig").addEventListener("click", function () { state.originals.push({ line1: "", line2: "", city: "", state: "", zip: "" }); saveOriginals(); renderOriginals(); });
+  $("#sampleBtn").addEventListener("click", function () {
+    state.originals = [{ line1: "1858 W Berteau Avenue", line2: "Apt GDN", city: "Chicago", state: "IL", zip: "60613" }];
+    saveOriginals(); renderOriginals();
+    $("#variantsInput").value = SAMPLE; runRouting();
+  });
+  $("#clearBtn").addEventListener("click", function () { $("#variantsInput").value = ""; state.results = []; store("arc.variants", null); $("#googleBtn").disabled = true; $("#exportBtn").disabled = true; render(); });
+  $("#runBtn").addEventListener("click", runRouting);
+  $("#googleBtn").addEventListener("click", runGoogle);
+  $("#exportBtn").addEventListener("click", exportCsv);
+  $("#fileInput").addEventListener("change", function (e) {
+    var f = e.target.files[0]; if (!f) return;
+    f.text().then(function (t) { $("#variantsInput").value = t; runRouting(); });
+    e.target.value = "";
+  });
+  $("#filters").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-f]"); if (!b) return;
+    state.filter = b.getAttribute("data-f"); render();
+  });
+  $("#results").addEventListener("click", function (e) {
+    var b = e.target.closest(".verdict button"); if (!b) return;
+    var key = b.parentNode.getAttribute("data-key"), v = b.getAttribute("data-v");
+    if (state.verdicts[key] === v) delete state.verdicts[key]; else state.verdicts[key] = v;
+    store("arc.verdicts", state.verdicts); render();
+  });
+  $("#rememberKey").addEventListener("change", function (e) { if (!e.target.checked) store("arc.key", null); });
+
+  // ---------- Init ----------
+  state.originals = load("arc.originals", null) || [{ line1: "1858 W Berteau Avenue", line2: "Apt GDN", city: "Chicago", state: "IL", zip: "60613" }];
+  state.verdicts = load("arc.verdicts", {});
+  var savedKey = load("arc.key", null);
+  if (savedKey) { $("#apiKey").value = savedKey; $("#rememberKey").checked = true; }
+  $("#gMode").value = load("arc.mode", "geocoder");
+  renderOriginals();
+  $("#variantsInput").value = load("arc.variants", null) || SAMPLE;
+  runRouting();
+})();
+</script>
+</body>
+</html>
