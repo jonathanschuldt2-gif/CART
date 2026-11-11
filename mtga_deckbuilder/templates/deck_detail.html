@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ d.name }} {{ d.colors|dots|safe }} <span class="muted">{{ f.name }} · {{ d.archetype }} · {{ d.size }} cards · score {{ d.score|round(2) }}</span></h1>
+<div class="two">
+<section class="card">
+  {% if d.commander %}<h3>Commander</h3><p title="{{ d.commander.oracle_text }}">{{ d.commander.name }}</p>{% endif %}
+  {% for g, cards in groups.items() %}
+  <h3>{{ g }} ({{ cards|sum(attribute=1) }})</h3>
+  <table class="compact">{% for c, n in cards %}
+    <tr><td>{{ n }}</td><td title="{{ c.oracle_text }}">{{ c.name }}</td><td class="mono">{{ c.mana_cost }}</td><td><span class="rar {{ c.rarity }}">{{ c.rarity[0]|upper }}</span></td></tr>
+  {% endfor %}</table>
+  {% endfor %}
+</section>
+<section class="card">
+  <h2>Why this deck</h2>
+  <ul>{% for n in d.notes %}<li>{{ n }}</li>{% endfor %}</ul>
+  <h2>Mana curve</h2>
+  <div class="curve">{% for cmc, n in curve.items() %}{% if cmc > 0 or n %}
+    <div class="col"><span class="n">{{ n }}</span><div class="b" style="height: {{ (n / curve_max * 100)|round }}px"></div><span>{{ cmc }}{% if cmc == 6 %}+{% endif %}</span></div>
+  {% endif %}{% endfor %}</div>
+  <h2>Export</h2>
+  <textarea id="arena" rows="14" readonly>{{ arena_text }}</textarea>
+  <p><button data-copy="arena">Copy for Arena import</button>
+    <a class="button secondary" href="/decks/{{ f.key }}/{{ idx }}/export.txt">Download .txt</a>
+    <a class="button secondary" href="/decks/{{ f.key }}/{{ idx }}/export.csv">Download .csv</a></p>
+  <form method="post" action="/decks/{{ f.key }}/{{ idx }}/save"><button class="secondary">Save deck</button></form>
+  <p class="muted small-text">In Arena: Decks → Import pastes the copied list straight in.</p>
+</section>
+</div>
+{% endblock %}

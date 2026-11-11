@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Meta decks</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+{% if message %}<p class="notice">{{ message }}</p>{% endif %}
+<p class="tabs"><a href="/meta" {% if not fmt %}class="on"{% endif %}>All</a>
+{% for k, fm in FORMATS.items() %}<a href="/meta?fmt={{ k }}" {% if fmt == k %}class="on"{% endif %}>{{ fm.name }}</a>{% endfor %}</p>
+<div class="two">
+<section class="card">
+  <h2>Imported decklists</h2>
+  <table>
+    <tr><th>Format</th><th>Deck</th><th>Cards</th><th>Source</th><th></th></tr>
+    {% for d, p in decks %}
+    <tr><td>{{ FORMATS[d.format].name }}</td><td><a href="/meta/{{ d.id }}">{{ d.name }}</a>
+      {% if p.unknown %}<span class="warn-text" title="{{ p.unknown|join(', ') }}">({{ p.unknown|length }} unknown)</span>{% endif %}</td>
+      <td>{{ p.main.values()|sum }}{% if p.sideboard %} + {{ p.sideboard.values()|sum }}{% endif %}</td>
+      <td class="muted small-text">{{ d.source[:40] }}</td>
+      <td><form method="post" action="/meta/{{ d.id }}/delete" class="inline"><button class="small danger">Delete</button></form></td></tr>
+    {% else %}<tr><td colspan="5" class="muted">No meta decks yet. Add some, because they drive both the meta rankings and the card-quality scores the builder uses.</td></tr>{% endfor %}
+  </table>
+  <form method="post" action="/meta/load-folder"><button class="secondary">Load meta folder (data/meta/&lt;format&gt;/*.txt)</button></form>
+</section>
+<section class="card">
+  <h2>Add a decklist</h2>
+  <form method="post" action="/meta/add" enctype="multipart/form-data">
+    <label>Format<select name="fmt">{% for k, fm in FORMATS.items() %}<option value="{{ k }}" {% if fmt == k %}selected{% endif %}>{{ fm.name }}</option>{% endfor %}</select></label>
+    <label>Archetype name<input name="name" placeholder="e.g. Mono-Red Aggro"></label>
+    <label>Paste Arena export text<textarea name="text" rows="10" placeholder="Deck&#10;4 Monastery Swiftspear&#10;…&#10;&#10;Sideboard&#10;2 …"></textarea></label>
+    <label>…or upload a .txt<input type="file" name="file" accept=".txt"></label>
+    <label>…or a URL that returns plain-text decklist (a site's "download/export .txt" link)<input name="url" placeholder="https://…"></label>
+    <button>Add deck</button>
+  </form>
+</section>
+</div>
+{% endblock %}

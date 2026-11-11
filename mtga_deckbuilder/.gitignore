@@ -1,0 +1,7 @@
+data/*
+!data/meta/
+data/meta/*
+!data/meta/README.txt
+__pycache__/
+.pytest_cache/
+.env

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Best decks by format</h1>
+<table>
+<tr><th>Format</th><th>Best deck from your cards</th><th>Score</th><th>Cheapest meta deck</th><th>Wildcards (C/U/R/M)</th></tr>
+{% for f, b, m in summary %}
+<tr><td><a href="/decks/{{ f.key }}"><b>{{ f.name }}</b></a></td>
+  <td>{% if b %}<a href="/decks/{{ f.key }}/0">{{ b.name }}</a> {{ b.colors|dots|safe }}{% else %}<span class="muted">Not enough legal cards</span>{% endif %}</td>
+  <td>{{ b.score|round(2) if b else "" }}</td>
+  <td>{% if m %}<a href="/meta/{{ m.deck_id }}">{{ m.name }}</a> ({{ m.completion|pct }} owned){% else %}<span class="muted">No meta decks added</span>{% endif %}</td>
+  <td>{% if m %}{{ m.wildcards.common }}/{{ m.wildcards.uncommon }}/{{ m.wildcards.rare }}/{{ m.wildcards.mythic }}{% endif %}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

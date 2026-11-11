@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Import complete</h1>
+<div class="tiles">
+  <div class="tile"><div class="label">Detected format</div><div class="value small">{{ r.kind|upper }}</div></div>
+  <div class="tile"><div class="label">Rows read</div><div class="value">{{ r.rows }}</div></div>
+  <div class="tile"><div class="label">Matched</div><div class="value">{{ r.matched_rows }}</div><div class="sub">{{ r.cards_added }} copies, {{ r.unique }} printings</div></div>
+  <div class="tile {% if r.unmatched %}warn{% endif %}"><div class="label">Unmatched</div><div class="value">{{ r.unmatched|length }}</div></div>
+</div>
+{% if r.unmatched %}
+<section class="card">
+  <h2>Rows that didn't match a card on Arena</h2>
+  <p>Usually a typo, a card that isn't on Arena, or an out-of-date card database (update it from the home page). Fix the name and import those rows again in <b>Add</b> mode.</p>
+  <table><tr><th>Line</th><th>Name</th><th>Qty</th><th>Set</th><th>#</th></tr>
+  {% for u in r.unmatched[:300] %}<tr><td>{{ u.line_no }}</td><td>{{ u.name }}</td><td>{{ u.quantity }}</td><td>{{ u.set_code }}</td><td>{{ u.collector_number }}</td></tr>{% endfor %}
+  </table>
+</section>
+{% endif %}
+<p><a class="button" href="/collection">View collection</a> <a class="button" href="/decks">Build decks</a></p>
+{% endblock %}

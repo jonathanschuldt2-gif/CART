@@ -1,0 +1,18 @@
+Deck
+4 Red Soldier 1
+4 White Soldier 1
+4 Red Soldier 2
+4 White Soldier 3
+4 Boros Captain
+4 Red Removal
+4 White Removal
+4 Red Walker
+4 Fire // Ice
+4 Sacred Foundry
+4 Inspiring Vantage
+8 Mountain
+8 Plains
+
+Sideboard
+3 White Big Removal
+2 Red Insight

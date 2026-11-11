@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Saved decks</h1>
+{% for d in rows %}
+<section class="card">
+  <h2>{{ d.name }} <span class="muted">{{ FORMATS[d.format].name if d.format in FORMATS else d.format }} · {{ d.created_at.strftime("%Y-%m-%d") }}</span></h2>
+  <textarea id="s{{ d.id }}" rows="8" readonly>{{ d.text }}</textarea>
+  <p><button data-copy="s{{ d.id }}">Copy for Arena import</button></p>
+  <form method="post" action="/saved/{{ d.id }}/delete" class="inline"><button class="small danger">Delete</button></form>
+</section>
+{% else %}<p class="muted">No saved decks yet.</p>{% endfor %}
+{% endblock %}

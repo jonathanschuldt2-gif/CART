@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+{% if status.message %}<p class="notice">{{ status.message }}</p>{% endif %}
+<div class="tiles">
+  <div class="tile"><div class="label">Card database</div><div class="value">{{ "{:,}".format(n_cards) }}</div><div class="sub">Arena printings</div></div>
+  <div class="tile"><div class="label">Unique cards owned</div><div class="value">{{ "{:,}".format(unique) }}</div></div>
+  <div class="tile"><div class="label">Total copies</div><div class="value">{{ "{:,}".format(total) }}</div></div>
+  <div class="tile"><div class="label">By rarity</div>
+    <div class="sub">C {{ rarity.common or 0 }} · U {{ rarity.uncommon or 0 }} · R {{ rarity.rare or 0 }} · M {{ rarity.mythic or 0 }}</div></div>
+</div>
+
+<section class="card">
+  <h2>Getting started</h2>
+  <ol>
+    <li><form method="post" action="/cards/refresh" class="inline">
+      <button {% if status.running %}disabled{% endif %}>{% if status.running %}Updating…{% else %}Update card database{% endif %}</button>
+    </form> downloads card data for every card on Arena from Scryfall. Do this first, and again after each new set.</li>
+    <li><a href="/import">Import your collection</a> from an Untapped.gg, Aetherhub, MTGA Assistant or Moxfield export (CSV), or from Arena deck text.</li>
+    <li>Add current <a href="/meta">meta decklists</a> for the formats you play.</li>
+    <li><a href="/decks">Build decks</a>. You get meta decks ranked by the wildcards you'd need, plus the best decks you can build from cards you already own.</li>
+  </ol>
+</section>
+
+{% if set_stats %}
+<section class="card">
+  <h2>Set completion</h2>
+  <table>
+    <tr><th>Set</th><th>Owned</th><th>Cards in set</th><th>Completion</th></tr>
+    {% for code, have, tot, pct in set_stats %}
+    <tr><td><a href="/collection?set_code={{ code }}">{{ code }}</a></td><td>{{ have }}</td><td>{{ tot }}</td>
+      <td><div class="bar"><span style="width: {{ (pct*100)|round }}%"></span></div> {{ pct|pct }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endif %}
+{% if status.running %}<meta http-equiv="refresh" content="10">{% endif %}
+{% endblock %}

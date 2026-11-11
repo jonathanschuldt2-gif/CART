@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Collection <span class="muted">{{ count }} printings · {{ copies }} copies</span></h1>
+<form class="filters" method="get">
+  <input name="q" value="{{ f.q }}" placeholder="Search name or rules text">
+  <select name="fmt"><option value="">Any format</option>
+    {% for k, fm in FORMATS.items() %}<option value="{{ k }}" {% if f.fmt == k %}selected{% endif %}>{{ fm.name }}</option>{% endfor %}</select>
+  <select name="color"><option value="">Any color</option>
+    {% for c, n in [("W","White"),("U","Blue"),("B","Black"),("R","Red"),("G","Green"),("M","Multicolor"),("C","Colorless")] %}
+    <option value="{{ c }}" {% if f.color == c %}selected{% endif %}>{{ n }}</option>{% endfor %}</select>
+  <select name="rarity"><option value="">Any rarity</option>
+    {% for r in ["common","uncommon","rare","mythic"] %}<option value="{{ r }}" {% if f.rarity == r %}selected{% endif %}>{{ r|title }}</option>{% endfor %}</select>
+  <input name="set_code" value="{{ f.set_code }}" placeholder="Set" size="5">
+  <input name="ctype" value="{{ f.ctype }}" placeholder="Type (e.g. Creature)" size="14">
+  <button>Filter</button>
+</form>
+<p class="exports">Export: <a href="/collection/export.csv">CSV</a> · <a href="/collection/export.json">JSON</a> · <a href="/collection/export.txt">Arena text</a></p>
+<table class="cards">
+<tr><th>Qty</th><th>Name</th><th></th><th>Cost</th><th>Type</th><th>Rarity</th><th>Set</th><th></th></tr>
+{% for c, n in rows %}
+<tr>
+  <td>{{ n }}</td><td title="{{ c.oracle_text }}">{{ c.name }}</td><td>{{ c.colors|dots|safe }}</td>
+  <td class="mono">{{ c.mana_cost }}</td><td>{{ c.type_line }}</td>
+  <td><span class="rar {{ c.rarity }}">{{ c.rarity[0]|upper }}</span></td><td>{{ c.set_code }} {{ c.collector_number }}</td>
+  <td><form method="post" action="/collection/set" class="inline qty">
+    <input type="hidden" name="card_id" value="{{ c.id }}"><input type="hidden" name="back" value="{{ request.url.path }}?{{ request.url.query }}">
+    <input type="number" name="qty" value="{{ n }}" min="0" max="99"><button class="small">Set</button></form></td>
+</tr>
+{% else %}
+<tr><td colspan="8" class="muted">No cards. <a href="/import">Import your collection</a>.</td></tr>
+{% endfor %}
+</table>
+{% if pages > 1 %}
+<p class="pager">{% for p in range(1, pages + 1) %}{% if p == page %}<b>{{ p }}</b>{% else %}<a href="?q={{ f.q }}&fmt={{ f.fmt }}&color={{ f.color }}&rarity={{ f.rarity }}&set_code={{ f.set_code }}&ctype={{ f.ctype }}&page={{ p }}">{{ p }}</a>{% endif %} {% endfor %}</p>
+{% endif %}
+{% endblock %}

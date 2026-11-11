@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}MTGA Deckbuilder{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/">MTGA Deckbuilder</a>
+  <nav>
+    <a href="/collection">Collection</a>
+    <a href="/import">Import</a>
+    <a href="/meta">Meta decks</a>
+    <a href="/decks">Build decks</a>
+    <a href="/saved">Saved</a>
+  </nav>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+<script>
+document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
+  const el = document.getElementById(btn.dataset.copy);
+  navigator.clipboard.writeText(el.value || el.textContent).then(() => {
+    const t = btn.textContent; btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = t, 1500);
+  });
+}));
+</script>
+</body>
+</html>

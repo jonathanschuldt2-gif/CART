@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Import collection</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<section class="card">
+<form method="post" action="/import" enctype="multipart/form-data">
+  <label>Upload a file (CSV, TXT or JSON)<input type="file" name="file" accept=".csv,.txt,.tsv,.json"></label>
+  <label>…or paste it
+    <textarea name="text" rows="14" placeholder="Name,Quantity,Set,Collector Number&#10;Lightning Strike,4,M19,152&#10;&#10;or Arena format:&#10;4 Lightning Strike (M19) 152"></textarea></label>
+  <fieldset>
+    <legend>Mode</legend>
+    <label class="radio"><input type="radio" name="mode" value="replace" checked> Replace my collection (use for a full export)</label>
+    <label class="radio"><input type="radio" name="mode" value="add"> Add to my collection</label>
+  </fieldset>
+  <button>Import</button>
+</form>
+</section>
+<section class="card">
+  <h2>Where do I get an export?</h2>
+  <p>Arena has no export button for your collection, so use a collection tracker that reads it:</p>
+  <ul>
+    <li><b>Untapped.gg</b> companion: Collection → Export (CSV).</li>
+    <li><b>Aetherhub</b> / <b>MTGA Assistant</b> tracker: Collection → Export.</li>
+    <li><b>Moxfield</b> / <b>Deckstats</b> collections: Export CSV.</li>
+    <li>Any CSV works if it has a name column (<code>Name</code>/<code>Card</code>), and ideally <code>Quantity</code>/<code>Count</code>, <code>Set</code>, <code>Collector Number</code> or an Arena ID column.</li>
+    <li>Arena deck text (<code>4 Card Name (SET) 123</code>) also works, e.g. to add a few cards.</li>
+  </ul>
+</section>
+{% endblock %}

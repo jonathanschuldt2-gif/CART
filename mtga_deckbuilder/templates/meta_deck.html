@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ d.name }} <span class="muted">{{ FORMATS[d.format].name }}</span></h1>
+<div class="tiles">
+  <div class="tile"><div class="label">You own</div><div class="value">{{ m.completion|pct }}</div></div>
+  {% for r in ["common","uncommon","rare","mythic"] %}
+  <div class="tile"><div class="label"><span class="rar {{ r }}">{{ r[0]|upper }}</span> wildcards</div><div class="value">{{ m.wildcards[r] }}</div><div class="sub">main deck {{ m.wildcards_main[r] }}</div></div>
+  {% endfor %}
+</div>
+{% if m.unknown %}<p class="error">Cards not found on Arena: {{ m.unknown|join(", ") }}</p>{% endif %}
+<div class="two">
+<section class="card">
+  <table>
+    <tr><th>Section</th><th>Need</th><th>Own</th><th>Card</th><th></th></tr>
+    {% for section, c, need, own in rows %}
+    <tr class="{% if own < need and not c.is_basic %}missing{% endif %}"><td>{{ section }}</td><td>{{ need }}</td><td>{{ own if not c.is_basic else "∞" }}</td>
+      <td title="{{ c.oracle_text }}">{{ c.name }}</td><td><span class="rar {{ c.rarity }}">{{ c.rarity[0]|upper }}</span></td></tr>
+    {% endfor %}
+  </table>
+</section>
+<section class="card">
+  <h2>Replacements from your collection</h2>
+  {% for name, opts in m.swaps.items() %}<p><b>{{ name }}</b> → {{ opts|join(", ") }}</p>
+  {% else %}<p class="muted">Nothing missing, or no close substitutes owned.</p>{% endfor %}
+  <h2>Decklist</h2>
+  <textarea id="metatext" rows="12" readonly>{{ d.text }}</textarea>
+  <button data-copy="metatext">Copy for Arena import</button>
+</section>
+</div>
+{% endblock %}

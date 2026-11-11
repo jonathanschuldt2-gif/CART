@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ f.name }}</h1>
+<p class="tabs">{% for k, fm in FORMATS.items() %}<a href="/decks/{{ k }}" {% if f.key == k %}class="on"{% endif %}>{{ fm.name }}</a>{% endfor %}</p>
+<div class="two">
+<section class="card">
+  <h2>Best decks from your collection</h2>
+  <p class="muted">Built only from cards you own, so they cost 0 wildcards.</p>
+  {% if not has_collection %}<p><a href="/import">Import your collection</a> first.</p>{% endif %}
+  {% for d in built %}
+  <div class="deckrow">
+    <a href="/decks/{{ f.key }}/{{ loop.index0 }}"><b>{{ d.name }}</b></a> {{ d.colors|dots|safe }}
+    <span class="score">{{ d.score|round(2) }}</span>
+    <div class="muted small-text">{{ d.notes[0] }}</div>
+  </div>
+  {% else %}{% if has_collection %}<p class="muted">You don't own enough {{ f.name }}-legal cards to build a full deck yet.</p>{% endif %}{% endfor %}
+</section>
+<section class="card">
+  <h2>Meta decks, cheapest to finish first</h2>
+  {% for m in matches %}
+  <div class="deckrow">
+    <a href="/meta/{{ m.deck_id }}"><b>{{ m.name }}</b></a> <span class="muted">{{ m.completion|pct }} owned</span>
+    <div class="wc">{% for r in ["common","uncommon","rare","mythic"] %}<span class="rar {{ r }}">{{ r[0]|upper }}</span> {{ m.wildcards[r] }} {% endfor %}</div>
+    {% if m.missing %}<div class="muted small-text">Missing: {% for x in m.missing[:6] %}{{ x.missing }}× {{ x.card.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% if m.missing|length > 6 %}, …{% endif %}</div>{% endif %}
+  </div>
+  {% else %}<p class="muted">No {{ f.name }} meta decks yet. <a href="/meta?fmt={{ f.key }}">Add some</a>.</p>{% endfor %}
+</section>
+</div>
+{% endblock %}
