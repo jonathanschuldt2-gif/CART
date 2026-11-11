@@ -1,0 +1,8 @@
+[UnityCrossThreadLogger]<== BotDraft_DraftStatus(abc-1)
+{"CurrentModule": "BotDraft", "Payload": "{\"Result\": \"Success\", \"EventName\": \"QuickDraft_TST_20261105\", \"DraftStatus\": \"PickNext\", \"PackNumber\": 0, \"PickNumber\": 0, \"DraftPack\": [\"1004\", \"1005\", \"1010\", \"1014\", \"1020\"], \"PickedCards\": []}"}
+[UnityCrossThreadLogger]==> BotDraft_DraftPick {"id":"x1","request":"{\"EventName\": \"QuickDraft_TST_20261105\", \"PickInfo\": {\"EventName\": \"QuickDraft_TST_20261105\", \"CardId\": \"1010\", \"PackNumber\": 0, \"PickNumber\": 0}}"}
+[UnityCrossThreadLogger]<== BotDraft_DraftPick(abc-2)
+{
+  "CurrentModule": "BotDraft",
+  "Payload": "{\"Result\": \"Success\", \"EventName\": \"QuickDraft_TST_20261105\", \"DraftStatus\": \"PickNext\", \"PackNumber\": 0, \"PickNumber\": 1, \"DraftPack\": [\"1001\", \"1009\", \"1013\", \"1021\"], \"PickedCards\": [\"1010\"]}"
+}

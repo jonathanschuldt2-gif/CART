@@ -1,0 +1,314 @@
+[
+ {
+  "name": "Dawnward Lancer",
+  "mtga_id": 1001,
+  "color": "W",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.565,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 4.1,
+  "drawn_improvement_win_rate": 0.035
+ },
+ {
+  "name": "Sunlit Rebuke",
+  "mtga_id": 1002,
+  "color": "W",
+  "rarity": "uncommon",
+  "types": [
+   "Instant"
+  ],
+  "ever_drawn_win_rate": 0.575,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 3.2,
+  "drawn_improvement_win_rate": 0.045
+ },
+ {
+  "name": "Gatehouse Recruit",
+  "mtga_id": 1003,
+  "color": "W",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.54,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 7.5,
+  "drawn_improvement_win_rate": 0.01
+ },
+ {
+  "name": "Choir of Banners",
+  "mtga_id": 1004,
+  "color": "W",
+  "rarity": "rare",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.61,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 1.6,
+  "drawn_improvement_win_rate": 0.08
+ },
+ {
+  "name": "Tidecaller Adept",
+  "mtga_id": 1005,
+  "color": "U",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.56,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 5.0,
+  "drawn_improvement_win_rate": 0.03
+ },
+ {
+  "name": "Mistform Lurker",
+  "mtga_id": 1006,
+  "color": "U",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.548,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 6.8,
+  "drawn_improvement_win_rate": 0.018
+ },
+ {
+  "name": "Recall the Depths",
+  "mtga_id": 1007,
+  "color": "U",
+  "rarity": "uncommon",
+  "types": [
+   "Sorcery"
+  ],
+  "ever_drawn_win_rate": 0.552,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 5.5,
+  "drawn_improvement_win_rate": 0.022
+ },
+ {
+  "name": "Leviathan of Glass",
+  "mtga_id": 1008,
+  "color": "U",
+  "rarity": "mythic",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.6,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 1.4,
+  "drawn_improvement_win_rate": 0.07
+ },
+ {
+  "name": "Gravebloom Rat",
+  "mtga_id": 1009,
+  "color": "B",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.555,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 6.0,
+  "drawn_improvement_win_rate": 0.025
+ },
+ {
+  "name": "Deathless Edict",
+  "mtga_id": 1010,
+  "color": "B",
+  "rarity": "uncommon",
+  "types": [
+   "Instant"
+  ],
+  "ever_drawn_win_rate": 0.59,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 2.6,
+  "drawn_improvement_win_rate": 0.06
+ },
+ {
+  "name": "Ossuary Thrall",
+  "mtga_id": 1011,
+  "color": "B",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.536,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 8.0,
+  "drawn_improvement_win_rate": 0.006
+ },
+ {
+  "name": "Night-Feast",
+  "mtga_id": 1012,
+  "color": "B",
+  "rarity": "common",
+  "types": [
+   "Sorcery"
+  ],
+  "ever_drawn_win_rate": 0.568,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 3.9,
+  "drawn_improvement_win_rate": 0.038
+ },
+ {
+  "name": "Emberfang Pup",
+  "mtga_id": 1013,
+  "color": "R",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.551,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 5.9,
+  "drawn_improvement_win_rate": 0.021
+ },
+ {
+  "name": "Cinder Volley",
+  "mtga_id": 1014,
+  "color": "R",
+  "rarity": "common",
+  "types": [
+   "Instant"
+  ],
+  "ever_drawn_win_rate": 0.575,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 3.0,
+  "drawn_improvement_win_rate": 0.045
+ },
+ {
+  "name": "Forgeborn Brute",
+  "mtga_id": 1015,
+  "color": "R",
+  "rarity": "uncommon",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.562,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 4.4,
+  "drawn_improvement_win_rate": 0.032
+ },
+ {
+  "name": "Rattlecart Raider",
+  "mtga_id": 1016,
+  "color": "R",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.53,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 8.6,
+  "drawn_improvement_win_rate": 0.0
+ },
+ {
+  "name": "Thornback Grazer",
+  "mtga_id": 1017,
+  "color": "G",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.553,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 5.8,
+  "drawn_improvement_win_rate": 0.023
+ },
+ {
+  "name": "Verdant Surge",
+  "mtga_id": 1018,
+  "color": "G",
+  "rarity": "common",
+  "types": [
+   "Instant"
+  ],
+  "ever_drawn_win_rate": 0.545,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 6.4,
+  "drawn_improvement_win_rate": 0.015
+ },
+ {
+  "name": "Canopy Titan",
+  "mtga_id": 1019,
+  "color": "G",
+  "rarity": "rare",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.596,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 1.9,
+  "drawn_improvement_win_rate": 0.066
+ },
+ {
+  "name": "Wayfarer's Compass",
+  "mtga_id": 1020,
+  "color": "",
+  "rarity": "common",
+  "types": [
+   "Artifact"
+  ],
+  "ever_drawn_win_rate": 0.52,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 9.5,
+  "drawn_improvement_win_rate": -0.01
+ },
+ {
+  "name": "Drowned Archivist",
+  "mtga_id": 1021,
+  "color": "UB",
+  "rarity": "uncommon",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.585,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 3.4,
+  "drawn_improvement_win_rate": 0.055
+ },
+ {
+  "name": "Brightmoor Sentry",
+  "mtga_id": 1022,
+  "color": "W",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.549,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 6.6,
+  "drawn_improvement_win_rate": 0.019
+ },
+ {
+  "name": "Harbor Smuggler",
+  "mtga_id": 1023,
+  "color": "U",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.557,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 5.2,
+  "drawn_improvement_win_rate": 0.027
+ },
+ {
+  "name": "Crypt Stalker",
+  "mtga_id": 1024,
+  "color": "B",
+  "rarity": "common",
+  "types": [
+   "Creature"
+  ],
+  "ever_drawn_win_rate": 0.561,
+  "ever_drawn_game_count": 5000,
+  "avg_seen": 4.8,
+  "drawn_improvement_win_rate": 0.031
+ }
+]
